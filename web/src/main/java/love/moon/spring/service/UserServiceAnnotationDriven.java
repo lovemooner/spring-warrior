@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by nadong on 2017/4/20.
+ * Author: lovemooner
+ * Date: 2017/5/22 17:47
  */
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class, readOnly = true)
 @Component
-public class UserServiceImpl implements UserService {
+public class UserServiceAnnotationDriven {
 
     @Autowired
     private UserDAO userDao;
@@ -25,10 +27,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void test() {
 
     }
 
+    /**
+     * Transaction之对public方法有效
+     */
+    private void privateMethod(){
+
+    }
 
     public List<User> getAllUsernames() {
         return userDao.findAll();

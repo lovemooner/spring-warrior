@@ -60,7 +60,52 @@
         <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>
 
-    <!-- 使用annotation定义事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- ==========================下面使用aop切面的方式来实现================================== -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!--配置事务传播性，隔离级别以及超时回滚等问题 -->
+        <tx:attributes>
+            <tx:method name="get*" propagation="REQUIRED" isolation="DEFAULT" read-only="true"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="*" rollback-for="Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="bizMethods" expression="execution(* love.moon.spring.service.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods" />
+    </aop:config>
+    <!--<aop:config>-->
+        <!--<aop:pointcut id="baseBizMethods" expression="execution(* love.moon.spring.service.base.*.*(..))"/>-->
+        <!--<aop:advisor pointcut-ref="services" advice-ref="txAdvice"/>-->
+    <!--</aop:config>-->
+
+    <!-- =========使用annotation定义事务======================================= -->
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+
+    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
+    <!--<property name="messageConverters">-->
+    <!--<list>-->
+    <!--<bean id="jsonHttpMessageConverter"-->
+    <!--class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
+    <!--&lt;!&ndash;<property name="objectMapper" ref="customObjectMapper" />&ndash;&gt;-->
+    <!--</bean>-->
+
+    <!--<bean id="formHttpMessageConverter"-->
+    <!--class="org.springframework.http.converter.FormHttpMessageConverter"/>-->
+
+    <!--<bean id="stringHttpMessageConverter"-->
+    <!--class="org.springframework.http.converter.StringHttpMessageConverter"/>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="taskExecutor"-->
+    <!--class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+    <!--<property name="corePoolSize" value="20"/>-->
+    <!--<property name="maxPoolSize" value="20"/>-->
+    <!--<property name="WaitForTasksToCompleteOnShutdown" value="true"/>-->
+    <!--</bean>-->
 
 </beans>

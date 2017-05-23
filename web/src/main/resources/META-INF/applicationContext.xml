@@ -12,52 +12,6 @@
     <context:component-scan base-package="love.moon.spring.service"/>
     <context:component-scan base-package="love.moon.spring.dao"/>
 
-    <!--<bean id="txManager"-->
-          <!--class="org.springframework.orm.hibernate3.HibernateTransactionManager">-->
-        <!--<property name="sessionFactory" ref="sessionFactory"/>-->
-    <!--</bean>-->
-
-    <!--<tx:advice id="txAdvice" transaction-manager="txManager">-->
-        <!--<tx:attributes>-->
-            <!--<tx:method name="get*" read-only="true"/>-->
-            <!--<tx:method name="*"/>-->
-        <!--</tx:attributes>-->
-    <!--</tx:advice>-->
-
-    <!--<aop:config>-->
-        <!--<aop:pointcut id="bizMethods" expression="execution(* love.celery.service.*.*(..))"/>-->
-        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods"/>-->
-    <!--</aop:config>-->
-    <!--<aop:config>-->
-        <!--<aop:pointcut id="baseBizMethods" expression="execution(* love.celery.service.base.*.*(..))"/>-->
-        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="baseBizMethods"/>-->
-    <!--</aop:config>-->
-
-    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
-        <!--<property name="messageConverters">-->
-            <!--<list>-->
-                <!--<bean id="jsonHttpMessageConverter"-->
-                      <!--class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
-                    <!--&lt;!&ndash;<property name="objectMapper" ref="customObjectMapper" />&ndash;&gt;-->
-                <!--</bean>-->
-
-                <!--<bean id="formHttpMessageConverter"-->
-                      <!--class="org.springframework.http.converter.FormHttpMessageConverter"/>-->
-
-                <!--<bean id="stringHttpMessageConverter"-->
-                      <!--class="org.springframework.http.converter.StringHttpMessageConverter"/>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-
-
-    <!--<bean id="taskExecutor"-->
-          <!--class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
-        <!--<property name="corePoolSize" value="20"/>-->
-        <!--<property name="maxPoolSize" value="20"/>-->
-        <!--<property name="WaitForTasksToCompleteOnShutdown" value="true"/>-->
-    <!--</bean>-->
 
 
 </beans>
