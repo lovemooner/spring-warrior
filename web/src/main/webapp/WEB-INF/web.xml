@@ -7,6 +7,11 @@
     <servlet>
         <servlet-name>spring-dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring/spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
@@ -43,8 +48,7 @@
     <!-- 读取spring配置文件 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/META-INF/applicationContext.xml,
-            classpath:/META-INF/infrastructure.xml
+        <param-value>classpath:spring/applicationContext.xml,classpath:spring/infrastructure.xml
         </param-value>
     </context-param>
 

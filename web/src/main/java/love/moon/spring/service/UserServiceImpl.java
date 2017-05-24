@@ -2,11 +2,14 @@ package love.moon.spring.service;
 
 import love.moon.spring.dao.UserDAO;
 import love.moon.spring.model.User;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,7 +18,7 @@ import java.util.List;
  */
 @Component
 public class UserServiceImpl implements UserService {
-
+    private Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDAO userDao;
 
@@ -26,11 +29,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public void test() {
-
     }
 
+    public void testAopExposeProxy(){
+        ((UserServiceImpl) AopContext.currentProxy()).test();
+    }
 
     public List<User> getAllUsernames() {
+        test();
         return userDao.findAll();
     }
 }

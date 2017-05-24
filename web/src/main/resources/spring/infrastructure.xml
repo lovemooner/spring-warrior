@@ -14,7 +14,7 @@
     <context:property-placeholder location="classpath:/META-INF/properties/*.properties"/>
 
     <!-- 使用C3P0数据源，MySQL数据库 -->
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    <bean id="dataSourceMySql" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driver}"/>
         <property name="jdbcUrl" value="${jdbc.url}?zeroDateTimeBehavior=convertToNull&amp;characterEncoding=utf8"/>
         <property name="user" value="${jdbc.user}"/>
@@ -32,6 +32,26 @@
         <property name="maxIdleTimeExcessConnections" value="${jdbc.maxIdleTimeExcessConnections}"/>
         <property name="testConnectionOnCheckin" value="false"/>
         <property name="testConnectionOnCheckout" value="true"/>
+    </bean>
+
+    <bean id="dataSourceOracle" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${oracle.jdbc.driver}"/>
+        <property name="jdbcUrl" value="${oracle.jdbc.url}"/>
+        <property name="user" value="${oracle.jdbc.user}"/>
+        <property name="password" value="${oracle.jdbc.password}"/>
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>
+        <property name="minPoolSize" value="${jdbc.miniPoolSize}"/>
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
+    </bean>
+
+    <bean id="dataSource" class="love.moon.spring.config.datasource.DynamicDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="dataSourceMySql" value-ref="dataSourceMySql"/>
+                <entry key="dataSourceOracle" value-ref="dataSourceOracle"/>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="dataSourceMySql"/>
     </bean>
 
     <bean id="improvedNamingStrategy" class="love.moon.spring.config.MyNamingStrategy">
@@ -64,48 +84,26 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <!--配置事务传播性，隔离级别以及超时回滚等问题 -->
         <tx:attributes>
-            <tx:method name="get*" propagation="REQUIRED" isolation="DEFAULT" read-only="true"/>
-            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="save*" propagation="REQUIRED" isolation="DEFAULT"/>
             <tx:method name="del*" propagation="REQUIRED"/>
-            <tx:method name="update*" propagation="REQUIRED"/>
-            <tx:method name="*" rollback-for="Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
         </tx:attributes>
     </tx:advice>
     <aop:config>
-        <aop:pointcut id="bizMethods" expression="execution(* love.moon.spring.service.*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods" />
+        <aop:pointcut id="bizMethods" expression="execution(* love.moon.spring.service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods"/>
     </aop:config>
-    <!--<aop:config>-->
-        <!--<aop:pointcut id="baseBizMethods" expression="execution(* love.moon.spring.service.base.*.*(..))"/>-->
-        <!--<aop:advisor pointcut-ref="services" advice-ref="txAdvice"/>-->
-    <!--</aop:config>-->
+    <aop:config>
+        <aop:pointcut id="baseBizMethods" expression="execution(* love.moon.spring.service.base.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods"/>
+    </aop:config>
 
     <!-- =========使用annotation定义事务======================================= -->
     <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 
 
-    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
-    <!--<property name="messageConverters">-->
-    <!--<list>-->
-    <!--<bean id="jsonHttpMessageConverter"-->
-    <!--class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
-    <!--&lt;!&ndash;<property name="objectMapper" ref="customObjectMapper" />&ndash;&gt;-->
-    <!--</bean>-->
-
-    <!--<bean id="formHttpMessageConverter"-->
-    <!--class="org.springframework.http.converter.FormHttpMessageConverter"/>-->
-
-    <!--<bean id="stringHttpMessageConverter"-->
-    <!--class="org.springframework.http.converter.StringHttpMessageConverter"/>-->
-    <!--</list>-->
-    <!--</property>-->
-    <!--</bean>-->
-
-    <!--<bean id="taskExecutor"-->
-    <!--class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
-    <!--<property name="corePoolSize" value="20"/>-->
-    <!--<property name="maxPoolSize" value="20"/>-->
-    <!--<property name="WaitForTasksToCompleteOnShutdown" value="true"/>-->
-    <!--</bean>-->
 
 </beans>
